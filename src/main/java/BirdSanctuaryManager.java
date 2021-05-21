@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -6,34 +5,53 @@ public class BirdSanctuaryManager {
 
     Set<Bird> birdList = new HashSet<>();
 
-    public void addBird(Bird bird) {
-        birdList.add(bird);
-        bird.incrementCount();
+    private static BirdSanctuaryManager instance;
+
+    public static BirdSanctuaryManager getInstance() {
+        if (instance == null) {
+            instance = new BirdSanctuaryManager();
+        }
+        return instance;
     }
 
-    public void removeBird(Bird bird) {
-        birdList.remove(bird);
-        bird.decrementCount();
+    private BirdSanctuaryManager() {
+    }
+
+    public void addBird(Bird bird) {
+        try{
+            if(bird == null){
+                throw new CustomException("Bird Entered Null!!");
+            } else {
+                birdList.add(bird);
+                bird.incrementCount();
+            }
+        } catch (CustomException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeBird(Bird bird) throws CustomException {
+        if(birdList.contains(bird)) {
+            birdList.remove(bird);
+            bird.decrementCount();
+        } else {
+            throw new CustomException("Did not find bird!!");
+        }
     }
 
     public int getAllCount() {
         return birdList.size();
     }
 
-    public void editBird(Bird bird) {
-
+    public void printEatable() {
+        birdList.stream().forEach(Bird::eat);
     }
 
-    public void print() {
-        for (Bird bird : birdList) {
-            bird.eat();
-            if (bird instanceof Flyable) {
-                ((Flyable) bird).fly();
-            }
-            if (bird instanceof Swimmable) {
-                Swimmable swimmable = (Swimmable) bird;
-                swimmable.swim();
-            }
-        }
+    public void printFlyable() {
+        birdList.stream().filter(bird-> bird instanceof Flyable).forEach(bird -> ((Flyable) bird).fly());
+    }
+
+    public void printSwimmable() {
+        birdList.stream().filter(bird-> bird instanceof Swimmable).forEach(bird -> ((Swimmable) bird).swim());
     }
 }

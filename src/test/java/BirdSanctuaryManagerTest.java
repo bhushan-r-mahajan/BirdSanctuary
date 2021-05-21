@@ -3,15 +3,34 @@ import org.junit.jupiter.api.Test;
 
 public class BirdSanctuaryManagerTest {
     @Test
-    void givenAddBird_WhenProper_ReturnsTrue() {
-        BirdSanctuaryManager bird = new BirdSanctuaryManager();
-        int result = bird.getAllCount();
-        Assertions.assertEquals(10,result);
+    void givenBirds_WhenProper_ReturnsTotalCountOfBirds() {
+
+        BirdFactory birdFactory = new BirdFactory();
+        Bird parrot = birdFactory.getBird("parrot", "parrot");
+        Bird crow = birdFactory.getBird("crow", "crow");
+        Bird penguin = birdFactory.getBird("penguin", "penguin");
+        Bird duck = birdFactory.getBird("duck", "duck");
+
+        BirdSanctuaryManager.getInstance().addBird(parrot);
+        BirdSanctuaryManager.getInstance().addBird(crow);
+        BirdSanctuaryManager.getInstance().addBird(penguin);
+        BirdSanctuaryManager.getInstance().addBird(duck);
+
+        int result = BirdSanctuaryManager.getInstance().getAllCount();
+        Assertions.assertEquals(4, result);
     }
 
-    //@Test
-    //void name() {
-        //BirdSanctuaryManager bird = new BirdSanctuaryManager();
-       // String result = bird.addBird("parrot");
-    //}
+    @Test
+    void givenValueNull_ShouldThrowCustomException() {
+
+        BirdSanctuaryManager.getInstance().addBird(null);
+        int result = BirdSanctuaryManager.getInstance().getAllCount();
+        Assertions.assertEquals( 0, result);
+    }
+
+    @Test
+    void givenValue_ShouldThrowCustomException() {
+        Parrot parrot1 = new Parrot("p1");
+        Assertions.assertThrows( CustomException.class,  () -> {BirdSanctuaryManager.getInstance().removeBird(parrot1);});
+    }
 }
